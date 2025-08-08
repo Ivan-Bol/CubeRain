@@ -35,7 +35,7 @@ public class Spawer : MonoBehaviour
         Vector3 tempPosition = GenerateCubePosition();
         cube.Intialize(tempPosition);
         cube.gameObject.SetActive(true);
-        cube.CubeCollided += CubeDestroy;
+        cube.PlatformCollided += CubeDestroy;
     }
 
     private void GetCube()
@@ -46,7 +46,7 @@ public class Spawer : MonoBehaviour
     private void ActionOnRelease(Cube cube)
     {
         cube.gameObject.SetActive(false);
-        cube.CubeCollided -= CubeDestroy;
+        cube.PlatformCollided -= CubeDestroy;
     }
 
     private void CubeDestroy(Cube cube)
