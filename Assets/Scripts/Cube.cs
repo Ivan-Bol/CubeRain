@@ -15,7 +15,7 @@ public class Cube : MonoBehaviour
     private Coroutine _coroutine;
     private bool _isCollided;
 
-    public event Action<Cube> CubeCollided;
+    public event Action<Cube> PlatformCollided;
 
     private void Awake()
     {
@@ -33,8 +33,6 @@ public class Cube : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        _coroutine = null;
-
         if (_isCollided == false && collision.gameObject.TryGetComponent<Platform>(out _))
         {
             _isCollided = true;
@@ -56,6 +54,6 @@ public class Cube : MonoBehaviour
         
         yield return wait;
 
-        CubeCollided?.Invoke(this);
+        PlatformCollided?.Invoke(this);
     }
 }
