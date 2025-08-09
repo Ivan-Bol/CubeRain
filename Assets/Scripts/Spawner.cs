@@ -17,9 +17,9 @@ public class Spawer : MonoBehaviour
     {
         _cubePool = new ObjectPool<Cube>(
             createFunc: () => Instantiate(_cubePrefab), 
-            actionOnGet: (cube) => ActionOnGet(cube),
-            actionOnRelease: (cube) => ActionOnRelease(cube),
-            actionOnDestroy: (cube) => CubeDestroy(cube),
+            actionOnGet: (cube) => Get(cube),
+            actionOnRelease: (cube) => Release(cube),
+            actionOnDestroy: (cube) => DestroyCube(cube),
             collectionCheck: true, 
             defaultCapacity: _capacity, 
             maxSize: _maxSize);
@@ -30,12 +30,23 @@ public class Spawer : MonoBehaviour
         StartCoroutine(SpawnCubes());
     }
 
-    private void ActionOnGet(Cube cube)
+    private void Get(Cube cube)
     {
         Vector3 tempPosition = GenerateCubePosition();
-        cube.Intialize(tempPosition);
+        cube.Intialize(tempPosition, Vector3.zero);
         cube.gameObject.SetActive(true);
-        cube.PlatformCollided += CubeDestroy;
+        cube.PlatformCollided += ReleaseCube;
+    }
+
+    private void Release(Cube cube)
+    {
+        cube.gameObject.SetActive(false);
+        cube.PlatformCollided -= ReleaseCube;
+    }
+
+    private void DestroyCube(Cube cube)
+    {
+        Destroy(cube.gameObject);
     }
 
     private void GetCube()
@@ -43,15 +54,9 @@ public class Spawer : MonoBehaviour
         _cubePool.Get();
     }
 
-    private void ActionOnRelease(Cube cube)
+    private void ReleaseCube(Cube cube)
     {
-        cube.gameObject.SetActive(false);
-        cube.PlatformCollided -= CubeDestroy;
-    }
-
-    private void CubeDestroy(Cube cube)
-    {
-        Destroy(cube.gameObject);
+        _cubePool.Release(cube);
     }
 
     private Vector3 GenerateCubePosition()
