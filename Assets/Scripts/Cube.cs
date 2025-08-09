@@ -12,7 +12,6 @@ public class Cube : MonoBehaviour
 
     private Rigidbody _rigidbody;
     private Renderer _renderer;
-    private Coroutine _coroutine;
     private bool _isCollided;
 
     public event Action<Cube> PlatformCollided;
@@ -23,10 +22,11 @@ public class Cube : MonoBehaviour
         _renderer = GetComponent<Renderer>();
     }
 
-    public void Intialize(Vector3 position)
+    public void Intialize(Vector3 position, Vector3 velocity)
     {
         _isCollided = false;
         transform.position = position;
+        _rigidbody.linearVelocity = velocity;
 
         Repaint(_defaultColor);
     }
@@ -37,9 +37,9 @@ public class Cube : MonoBehaviour
         {
             _isCollided = true;
 
-            Repaint(_painter.Paint());
+            Repaint(_painter.GenerateRandomColor());
 
-            _coroutine = StartCoroutine(ReportAboutCollision());
+            StartCoroutine(ReportAboutCollision());
         }
     }
 
